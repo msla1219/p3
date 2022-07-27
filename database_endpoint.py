@@ -174,6 +174,8 @@ def order_book():
         result = dict()
         result['data'] = result_list
     
+        print(result)
+        
         return jsonify(result)
     
     except Exception as e:
