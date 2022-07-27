@@ -135,6 +135,10 @@ def trade():
             
         #Your code here
         #Note that you can access the database session using g.session
+        if veryfy(content) is True:
+            insert_order(content)
+        else:
+            log_message(content)
 
 @app.route('/order_book')
 def order_book():
