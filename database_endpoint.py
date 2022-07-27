@@ -103,7 +103,7 @@ def log_message(d):
         print(traceback.format_exc())
         print(e)
         
-    pass
+    
 
 """
 ---------------- Endpoints ----------------
@@ -111,41 +111,76 @@ def log_message(d):
     
 @app.route('/trade', methods=['POST'])
 def trade():
-    if request.method == "POST":
-        content = request.get_json(silent=True)
-        print( f"content = {json.dumps(content)}" )
-        columns = [ "sender_pk", "receiver_pk", "buy_currency", "sell_currency", "buy_amount", "sell_amount", "platform" ]
-        fields = [ "sig", "payload" ]
-        error = False
-        for field in fields:
-            if not field in content.keys():
-                print( f"{field} not received by Trade" )
+    
+    try:
+
+        if request.method == "POST":
+            content = request.get_json(silent=True)
+            print( f"content = {json.dumps(content)}" )
+            columns = [ "sender_pk", "receiver_pk", "buy_currency", "sell_currency", "buy_amount", "sell_amount", "platform" ]
+            fields = [ "sig", "payload" ]
+            error = False
+            for field in fields:
+                if not field in content.keys():
+                    print( f"{field} not received by Trade" )
+                    print( json.dumps(content) )
+                    log_message(content)
+                    return jsonify( False )
+
+            error = False
+            for column in columns:
+                if not column in content['payload'].keys():
+                    print( f"{column} not received by Trade" )
+                    error = True
+            if error:
                 print( json.dumps(content) )
                 log_message(content)
                 return jsonify( False )
-        
-        error = False
-        for column in columns:
-            if not column in content['payload'].keys():
-                print( f"{column} not received by Trade" )
-                error = True
-        if error:
-            print( json.dumps(content) )
-            log_message(content)
-            return jsonify( False )
-            
-        #Your code here
-        #Note that you can access the database session using g.session
-        if veryfy(content) is True:
-            insert_order(content)
-        else:
-            log_message(content)
+
+            #Your code here
+            #Note that you can access the database session using g.session
+            if veryfy(content) is True:
+                insert_order(content)
+            else:
+                log_message(content)
+
+    except Exception as e:
+        import traceback
+        print(traceback.format_exc())
+        print(e)
 
 @app.route('/order_book')
 def order_book():
     #Your code here
     #Note that you can access the database session using g.session
-    return jsonify(result)
+
+    try:
+        results = g.session.execute("select sender_pk, receiver_pk, buy_currency, sell_currency, buy_amount, sell_amount, signature " + 
+                            "from orders ")
+
+        result_list = list()
+        for row in results:
+            item = dict()
+            item['sender_pk'] = row['sender_pk']
+            item['receiver_pk'] = row['receiver_pk']
+            item['buy_currency'] = row['buy_currency']
+            item['sell_currency'] = row['sell_currency']
+            item['buy_amount'] = row['buy_amount']
+            item['sell_amount'] = row['sell_amount']
+            item['signature'] = row['signature']
+
+            result_list.append(item)
+
+        result = dict()
+        result['data'] = result_list
+    
+        return result
+    
+    except Exception as e:
+        import traceback
+        print(traceback.format_exc())
+        print(e)
+    
 
 if __name__ == '__main__':
     app.run(port='5002')
