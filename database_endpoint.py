@@ -140,12 +140,12 @@ def trade():
             #Note that you can access the database session using g.session
             if verify(content) is True: 
                 insert_order(content)
-                print("[MSL] Verified")
             else:
                 log_message(content)
-                print("[MSL] Not Verified")
+            
+            return jsonify( True )
 
-    except Exception as e:
+        except Exception as e:
         import traceback
         print(traceback.format_exc())
         print(e)
