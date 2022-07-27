@@ -145,7 +145,7 @@ def trade():
             
             return jsonify( True )
 
-        except Exception as e:
+    except Exception as e:
         import traceback
         print(traceback.format_exc())
         print(e)
