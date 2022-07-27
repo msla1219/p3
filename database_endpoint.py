@@ -139,7 +139,7 @@ def trade():
 
             #Your code here
             #Note that you can access the database session using g.session
-            if veryfy(content) is True:
+            if verify(content) is True: 
                 insert_order(content)
             else:
                 log_message(content)
