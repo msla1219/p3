@@ -64,7 +64,7 @@ def verify(content):
 
         
 def insert_order(content):
-
+    
     try:
         # Insert new order
         order_obj = Order(sender_pk=content['payload']['sender_pk'],
@@ -84,6 +84,7 @@ def insert_order(content):
         import traceback
         print(traceback.format_exc())
         print(e)
+        
         
 def log_message(d)
     # Takes input dictionary d and writes it to the Log table
