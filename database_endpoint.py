@@ -33,26 +33,12 @@ def verify(content):
 
     try:
 
-        msg_dict = {'platform': content['payload']['platform']}
-        
-        order_dict = {}
-        order_dict['sender_pk'] = content['payload']['sender_pk']
-        order_dict['receiver_pk'] = content['payload']['receiver_pk'] 
-        order_dict['buy_currency'] = content['payload']['buy_currency']
-        order_dict['sell_currency'] = content['payload']['sell_currency']
-        order_dict['buy_amount'] = content['payload']['buy_amount']
-        order_dict['sell_amount'] = content['payload']['sell_amount']
-        
-        msg_dict.update(order_dict)
-
-        msg = json.dumps(msg_dict)
-
         if content['payload']['platform'] == 'Ethereum':
             eth_sk = content['sig']
             eth_pk = content['payload']['sender_pk']
 
             payload = json.dumps(content['payload'])
-            eth_encoded_msg = eth_account.messages.encode_defunct(text=msg)
+            eth_encoded_msg = eth_account.messages.encode_defunct(text=payload)
             recovered_pk = eth_account.Account.recover_message(eth_encoded_msg, signature=eth_sk)
 
             # Check if signature is valid
@@ -67,7 +53,7 @@ def verify(content):
             algo_sig = content['sig']
             algo_pk = content['payload']['sender_pk']
 
-            result = algosdk.util.verify_bytes(msg.encode('utf-8'), algo_sig, algo_pk)
+            result = algosdk.util.verify_bytes(payload.encode('utf-8'), algo_sig, algo_pk)
             return result           # bool value 
 
     except Exception as e:
