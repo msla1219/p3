@@ -29,7 +29,94 @@ def shutdown_session(response_or_exc):
 """
 -------- Helper methods (feel free to add your own!) -------
 """
+def verify(content):
 
+    try:
+
+        if content['payload']['platform'] == 'Ethereum':
+            eth_sk = content['sig']
+            eth_pk = content['payload']['sender_pk']
+
+            payload = json.dumps(content['payload'])
+            eth_encoded_msg = eth_account.messages.encode_defunct(text=payload)
+            recovered_pk = eth_account.Account.recover_message(eth_encoded_msg, signature=eth_sk)
+
+            # Check if signature is valid
+            if recovered_pk == eth_pk:
+                result = True
+            else:
+                result = False
+
+            return result           # bool value
+
+        if content['payload']['platform'] == 'Algorand':
+            algo_sig = content['sig']
+            algo_pk = content['payload']['sender_pk']
+            payload = json.dumps(content['payload'])
+
+            result = algosdk.util.verify_bytes(payload.encode('utf-8'), algo_sig, algo_pk)
+            return result           # bool value 
+
+    except Exception as e:
+        import traceback
+        print(traceback.format_exc())
+        print(e)
+
+        def verify(content):
+
+    try:
+
+        if content['payload']['platform'] == 'Ethereum':
+            eth_sk = content['sig']
+            eth_pk = content['payload']['sender_pk']
+
+            payload = json.dumps(content['payload'])
+            eth_encoded_msg = eth_account.messages.encode_defunct(text=payload)
+            recovered_pk = eth_account.Account.recover_message(eth_encoded_msg, signature=eth_sk)
+
+            # Check if signature is valid
+            if recovered_pk == eth_pk:
+                result = True
+            else:
+                result = False
+
+            return result           # bool value
+
+        if content['payload']['platform'] == 'Algorand':
+            algo_sig = content['sig']
+            algo_pk = content['payload']['sender_pk']
+            payload = json.dumps(content['payload'])
+
+            result = algosdk.util.verify_bytes(payload.encode('utf-8'), algo_sig, algo_pk)
+            return result           # bool value 
+
+    except Exception as e:
+        import traceback
+        print(traceback.format_exc())
+        print(e)
+        
+def insert_order(content):
+
+    try:
+        # Insert new order
+        order_obj = Order(sender_pk=content['payload']['sender_pk'],
+                          receiver_pk=content['payload']['receiver_pk'], 
+                          buy_currency=content['payload']['buy_currency'], 
+                          sell_currency=content['payload']['sell_currency'], 
+                          buy_amount=content['payload']['buy_amount'], 
+                          sell_amount=content['payload']['sell_amount'], 
+                          exchange_rate=(content['payload']['buy_amount']/content['payload']['sell_amount']),
+                          sig=content['sig'])
+
+        session.add(order_obj)
+        session.commit()
+
+
+    except Exception as e:
+        import traceback
+        print(traceback.format_exc())
+        print(e)
+        
 def log_message(d)
     # Takes input dictionary d and writes it to the Log table
     pass
