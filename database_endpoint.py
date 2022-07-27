@@ -140,8 +140,10 @@ def trade():
             #Note that you can access the database session using g.session
             if verify(content) is True: 
                 insert_order(content)
+                print("[MSL] Verified")
             else:
                 log_message(content)
+                print("[MSL] Not Verified")
 
     except Exception as e:
         import traceback
