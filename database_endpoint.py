@@ -119,6 +119,21 @@ def insert_order(content):
         
 def log_message(d)
     # Takes input dictionary d and writes it to the Log table
+
+    payload = json.dumps(d['payload'])
+
+    try:
+        # Insert new log
+        log_obj = Log(message = json.dumps(d['payload']))
+
+        session.add(log_obj)
+        session.commit()
+
+    except Exception as e:
+        import traceback
+        print(traceback.format_exc())
+        print(e)
+        
     pass
 
 """
