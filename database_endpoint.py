@@ -106,7 +106,7 @@ def insert_order(content):
                           buy_amount=content['payload']['buy_amount'], 
                           sell_amount=content['payload']['sell_amount'], 
                           exchange_rate=(content['payload']['buy_amount']/content['payload']['sell_amount']),
-                          sig=content['sig'])
+                          signature=content['sig'])
 
         session.add(order_obj)
         session.commit()
