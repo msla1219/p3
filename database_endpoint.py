@@ -52,7 +52,8 @@ def verify(content):
         if content['payload']['platform'] == 'Algorand':
             algo_sig = content['sig']
             algo_pk = content['payload']['sender_pk']
-
+            payload = json.dumps(content['payload'])
+            
             result = algosdk.util.verify_bytes(payload.encode('utf-8'), algo_sig, algo_pk)
             return result           # bool value 
 
