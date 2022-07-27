@@ -86,7 +86,7 @@ def insert_order(content):
         print(e)
         
         
-def log_message(d)
+def log_message(d):
     # Takes input dictionary d and writes it to the Log table
 
     payload = json.dumps(d['payload'])
